@@ -15,7 +15,7 @@ The developer says "передаю", "отдаю фичу", or that someone else
    one on a feature branch, or the changes stay local and the task is recorded as not started. Write
    down which it was.
 2. **Fill "Передача" in the feature's `STATUS.md`:** the date and from whom; the state in two or
-   three lines; the next file to paste, with its model and effort; and what the files do not say:
+   three lines; the next file to paste, with its model tier; and what the files do not say:
    traps, local setup, open questions, who to ask.
 3. **Set "Ведёт"** to the colleague's login, or to "—" when it is not known yet.
 4. **Commit the plan and push the branch.** Asking for the handover is the developer's word to

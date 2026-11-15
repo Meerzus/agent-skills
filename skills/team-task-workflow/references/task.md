@@ -83,5 +83,6 @@ Write the result for a reader who has never seen this chat: full sentences, real
 ## Report
 
 A few lines to the developer: what now works, which checks ran and their result, the commits,
-deviations if any, and the next file to paste with its model and effort. If this was the last task
-before the review, the next file is `90-review.md`.
+deviations if any, and the next file to paste with the model tier from its header. If this was the
+last task before the review, the next file is `90-review.md`. Then stop: the next task belongs to a
+new chat, even when it looks small.

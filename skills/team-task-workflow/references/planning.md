@@ -5,6 +5,19 @@ features, a feature brief into tasks. It interviews the developer first, because
 built on guesses has to be redone, and writes files only after the developer confirms the shared
 understanding.
 
+A planning chat therefore takes at least three messages from the chat, with the developer's replies
+between them:
+
+1. **Questions.** Read, then ask. The message ends with the questions. No file is created or
+   changed.
+2. **Summary.** After the answers (and further rounds if needed): what was agreed, and
+   "подтверждаете?". The message ends there. Still no files.
+3. **Files.** After the developer's "да": this level's files, one level down and no further, then
+   the report.
+
+If you are about to write a task file and the developer has not yet answered a question in this
+chat, you have skipped steps 1 and 2: stop and ask.
+
 ## Contents
 
 - [Before the interview](#before-the-interview)
@@ -15,6 +28,7 @@ understanding.
 - [Finish](#finish)
 - [Starting new work](#starting-new-work)
 - [Adopting a project](#adopting-a-project)
+- [The project's models](#the-projects-models)
 
 ## Before the interview
 
@@ -29,7 +43,10 @@ Read, in this order, whatever exists:
    (the "Итог" in each closed feature's `STATUS.md`; its task files are gone by then).
 
 Then mark this element as "планируется" in the parent's `STATUS.md` (a feature outside a stage has
-no parent).
+no parent). That mark is the only file change allowed before the developer confirms the summary.
+
+If `docs/plans/README.md` has no "Модели" table, the first round of questions also asks for the
+line-up ([The project's models](#the-projects-models)).
 
 Decisions recorded above this level are settled. Do not ask about them again; raise one only when it
 contradicts another decision or the code, and say what contradicts what.
@@ -41,6 +58,11 @@ Treat the level as a design tree: every decision opens the decisions that hang o
 - Work in rounds. A round asks every question whose prerequisites are already settled, numbered,
   each with a recommended answer, worded so that "да" accepts the recommendation. A question that
   depends on another one still open waits for a later round.
+- **A round ends the message.** After the last question, stop and wait. The recommended answers are
+  there to make replying quick; they are not answers. Do not continue "assuming the
+  recommendations" and do not write files "as a draft to adjust later".
+- A brief with nothing left to decide is rare. If the pasted brief really has no open question, say
+  so, give the summary, and still wait for the developer's "да" before writing files.
 - Finding facts is the chat's job. What can be looked up in the code, the docs or the web is looked
   up, with a subagent when the search is wide and the agent has them, never asked. The decisions are
   the developer's.
@@ -73,6 +95,10 @@ described, it is two tasks. Number with a gap-free two-digit prefix; the review 
 At every level, write down what each child depends on, so a chat can refuse to start on a missing
 foundation.
 
+**One level only.** A stage's chat stops at feature briefs: the tasks of each feature are cut in
+that feature's own chat, after its own interview. A feature's chat stops at task files: it writes
+no code.
+
 ## Branches
 
 `docs/plans/README.md` says how branches are named, where they start and how they merge. This
@@ -100,8 +126,8 @@ Use the formats in `assets/`, in the language `docs/plans/README.md` names.
    - feature → the task files (mode "задача"), plus `90-review.md` (mode "проверка фичи").
 
    A draft brief states what the element delivers, what is in and out, the decisions it inherits,
-   what to read, the questions its own planning chat should settle, and when it counts as done. It
-   also names the model and effort for that chat.
+   what to read, the questions its own planning chat should settle, and when it counts as done. Its
+   header names the model tier for that chat, with the name from the project's "Модели" table.
 
    A task file is instructions, not a discussion: the goal, what to read first, what to do, what not
    to touch, when it is done, how to check it. Name real files and commands. Leave the "how" to the
@@ -120,8 +146,8 @@ when the developer says so, and always when the work is being handed to someone 
 ([handoff.md](handoff.md)).
 
 Report in a few lines: what was created, anything the developer should look at before work starts,
-and the next file to paste with its model and effort. That is the first child's brief, or the first
-task.
+and the next file to paste with its model tier. That is the first child's brief, or the first task.
+Then stop: the next piece belongs to a new chat.
 
 ## Starting new work
 
@@ -137,8 +163,14 @@ The developer brings a ticket or describes a feature, and there is no brief yet.
 3. Create the branch the project's way. For a stage, this branch becomes its first feature's branch.
 4. Write `BRIEF.md` with the matching mode: what it is and why, what is in and out, what is already
    decided, what to read, the ticket link, the questions planning should settle, when it is done.
-5. If this chat is fresh and short, go straight on to planning that brief. If it is already long,
-   commit the brief on the branch, stop, and name it as the next file to paste.
+   Open questions stay open in it: listing them is this chat's job, answering them is the
+   developer's.
+5. **Stop.** Commit the brief on the branch and end the message with its path, a two-line summary
+   of what it says, and the brief as the next file to paste into a new chat. This chat creates
+   nothing below the brief: no task files, no child folders, no `STATUS.md`.
+
+   Planning continues in this same chat only if the developer says so ("продолжай здесь") and the
+   chat is still short. It then starts from the top of this file, with the questions.
 
 ## Adopting a project
 
@@ -156,10 +188,34 @@ Otherwise set the project up, once:
    configuration, branch names on the remote, the style of recent commits. Then confirm in one
    round what could not be read: the base branch and branch naming, how pull requests merge and who
    merges them, the check command, the commit format, when to push, the language of plan files,
-   where debt goes.
+   where debt goes. The same round asks for the team's models
+   ([The project's models](#the-projects-models)): they cannot be read from the repository.
 4. **Write `docs/plans/README.md`** from [assets/readme.md](../assets/readme.md) with those answers.
 5. **Point the agent instructions at it.** With the developer's OK, add one line to the project's
    agent instructions (`AGENTS.md`, `CLAUDE.md` or what the project uses) saying that plans live in
    `docs/plans/` and work goes through this skill. Skip it when the project has no such file.
 6. **Commit it like any other change to a shared repository:** on a branch and through a pull
    request the project's way, or together with the first feature's branch.
+
+## The project's models
+
+Plan files name a model tier, and the "Модели" table in `docs/plans/README.md` says which model of
+this team each tier means. The table is filled when the project is adopted, and again when the
+developer says "обнови модели" or a chat finds it missing.
+
+1. **Ask, do not guess.** Two questions, in one message, and then wait:
+   - which models can be chosen in the agent the team uses here;
+   - which of them is the strong one (planning a stage), the ordinary one (planning a feature,
+     most tasks, reviews) and the small fast one (mechanical tasks). One model may take two tiers.
+
+   Also ask whether that agent has an effort or reasoning-level setting, and its values.
+2. **Do not rank models yourself**, even ones you think you know: names are reused, and the
+   developer sees price and speed that the chat does not. Do not add models the developer did not
+   name.
+3. **Write the table** as the developer gave it, with the exact names shown in their agent's model
+   picker, so a colleague can find them.
+4. **Commit** the README change the project's way. Plan files written earlier keep their headers:
+   the tier in them is still right, and a wrong name in brackets is fixed when the file is next
+   edited.
+
+Until the table exists, headers carry the tier alone: `Модель: средняя`.

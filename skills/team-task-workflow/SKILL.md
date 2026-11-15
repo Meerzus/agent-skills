@@ -11,9 +11,10 @@ is planned or built in a fresh chat, and keeps everything those chats need to kn
 repository. The next chat can then be anyone's: the same developer tomorrow, or a colleague who
 takes the work over.
 
-The developer drives it by hand: they open a new chat, set the model and effort the file recommends,
-paste the file's contents, and the chat does that one piece. So every file must work as a complete
-first message, and every chat must end by naming the next file to paste.
+The developer drives it by hand: they open a new chat, set the model the file recommends, paste the
+file's contents, and the chat does that one piece and hands control back. So every file must work
+as a complete first message, and every chat must end by naming the next file to paste. A chat never
+runs ahead of the developer: see [Where a chat stops](#where-a-chat-stops).
 
 Two roles appear below. **The developer** is whoever is in the chat now. **The planner** is whoever
 wrote the plan; the folder carries their login. They are often the same person, and nothing changes
@@ -69,18 +70,43 @@ The header of the pasted file says it. Without a header, go by what the develope
 
 | The chat starts with | Do | Read |
 |---|---|---|
-| a `BRIEF.md` (mode "план этапа / фичи") | interview the developer, then decompose one level down | [references/planning.md](references/planning.md) |
+| a `BRIEF.md` (mode "план этапа / фичи") | interview the developer; after their answers and their "да", decompose one level down | [references/planning.md](references/planning.md) |
 | a task file (mode "задача") | do the task, check, commit, record the result | [references/task.md](references/task.md) |
 | `90-review.md` (mode "проверка фичи"), or "закрывай фичу" | review with fresh eyes; close and clean up on the developer's word | [references/closing.md](references/closing.md) |
 | `90-close.md` (mode "закрытие этапа") | walk the stage as a whole, then clean up | [references/closing.md](references/closing.md) |
-| new work: a ticket, "распланируй фичу", "напиши бриф" | write the brief in the developer's folder | [references/planning.md](references/planning.md#starting-new-work) |
+| new work: a ticket, "распланируй фичу", "напиши бриф" | write the brief in the developer's folder, and stop | [references/planning.md](references/planning.md#starting-new-work) |
 | no `docs/plans/README.md` yet, "подключи процесс" | set the project up | [references/planning.md](references/planning.md#adopting-a-project) |
+| "обнови модели", or the README has no "Модели" table | ask which models the team has, write the table | [references/planning.md](references/planning.md#the-projects-models) |
 | "передаю", "подхвати", "продолжи за ..." | hand the work over, or pick a colleague's up | [references/handoff.md](references/handoff.md) |
 | "где мы", "что дальше" | read the `STATUS.md` files in the developer's folder (or the colleague's they name) top down, answer with the state and the next file to paste | — |
 
 File formats are in [assets/](assets/): `brief.md`, `status.md`, `task.md`, `debt.md`, and
 `readme.md` for `docs/plans/README.md`. Copy the structure, keep the header block exactly, and drop
 sections that would be empty.
+
+## Where a chat stops
+
+The plan is worth something only because the developer's answers are in it. A chat that writes the
+brief, the questions, the answers and the tasks in one go has guessed those answers, and the
+guesses then get built. So at each point below the chat ends its message and writes nothing more
+until the developer replies.
+
+| The chat has just | Its message ends with | Before the developer replies it does not |
+|---|---|---|
+| written a `BRIEF.md` for new work | the brief's path, and the brief as the next file to paste | ask the interview questions, create task files or child folders |
+| asked a round of interview questions | the numbered questions, each with a recommended answer | answer them itself, create or change any file |
+| summarised what was agreed | the summary and the question "подтверждаете?" | write files |
+| written one level down: a stage's feature briefs, or a feature's task files | the report and the next file to paste | plan the level below, start a task, write code |
+| finished a task | the report and the next file to paste | start the next task |
+
+- **A recommended answer is a suggestion.** The developer has not answered until they answer. A
+  request made once at the start ("распланируй фичу") is not an answer to questions asked later.
+- **One chat writes one level.** A stage's chat writes feature briefs and no task files. A feature's
+  chat writes task files and no code. New work gets a brief and nothing below it.
+- **The only shortcut is the developer's own words** ("вопросов не задавай, реши сам", "продолжай
+  здесь"). Then say in the brief which decisions were the chat's and not the developer's.
+- If the agent cannot wait for a reply at all (a run with nobody to answer), it stops at the first
+  of these points anyway and reports what it needs.
 
 ## What holds everywhere
 
@@ -108,26 +134,39 @@ sections that would be empty.
    closing a stage deletes its feature folders. The summary goes into the `STATUS.md` that stays,
    and everything is committed before anything is deleted, so every file can be restored from
    history. Only a closing chat deletes plan files.
-8. **End every chat with the next step:** the file to paste next, with its model and effort, or the
+8. **End every chat with the next step:** the file to paste next, with its model tier, or the
    decision the developer has to make.
 
 ## Models and effort
 
-Every brief and task file names the model and effort for the chat that will run it. The developer
-sets them before pasting; a pasted message cannot switch the model. If the chat finds itself on a
-clearly different model than the header asks for, say so in one line and carry on.
+Every brief and task file names the model for the chat that will run it. The developer sets it
+before pasting; a pasted message cannot switch the model.
 
-Pick the cheapest setting that does the piece well. Most of the work is ordinary.
+Teams, machines and agents have different models, so a file names a **tier**, and the project says
+which of its models each tier means.
 
-| Chat | Tier | Claude, November 2026 | Effort |
-|---|---|---|---|
-| Planning a stage | strongest | Fable 5.2 | high |
-| Planning a feature | mid | Opus 5.5 | high |
-| Task, mechanical (config, boilerplate by an existing pattern, renames) | small | Sonnet 5.5 | medium |
-| Task, ordinary | mid | Opus 5.5 | medium |
-| Task, hard (disputed logic, a screen's design, concurrency, data migration) | mid | Opus 5.5 | high |
-| Feature review, closing | mid | Opus 5.5 | high |
+| Chat | Tier | Effort |
+|---|---|---|
+| Planning a stage | strong (сильная) | high |
+| Planning a feature | mid (средняя) | high |
+| Task, mechanical (config, boilerplate by an existing pattern, renames) | small (малая) | medium |
+| Task, ordinary | mid (средняя) | medium |
+| Task, hard (disputed logic, a screen's design, concurrency, data migration) | mid (средняя) | high |
+| Feature review, closing | mid (средняя) | high |
 
-The strongest model in a task only when the feature's planning chat writes down why that task needs
-it. With another agent, name its model of the same tier in the file headers. When the line-up
-changes, keep the tiers and update the names.
+Pick the cheapest tier that does the piece well. Most of the work is ordinary. The strong tier in a
+task only when the feature's planning chat writes down why that task needs it.
+
+- **The names come from the "Модели" table in `docs/plans/README.md`** and from nowhere else. A
+  header reads `Модель: средняя (<the table's name for that tier>)`. Do not write a model name from
+  memory, the name of the model this chat runs on, or a name seen in another project: a colleague
+  would be told to pick a model their agent does not have.
+- **No table, or no model for the tier** → write the tier alone, and ask the developer for the
+  line-up ([references/planning.md](references/planning.md#the-projects-models)). Do not rank
+  unfamiliar models yourself; the developer knows which of theirs is the strong one.
+- **Effort** is a setting only some agents have. The same table says whether this project's agent
+  has it; when it does not, leave "усилие" out of every header and report.
+- A developer whose own line-up differs from the table goes by the tier. One model may serve two
+  tiers when the team has fewer models than tiers.
+- If the chat can tell it runs on a clearly different tier than the header asks for, it says so in
+  one line and carries on.
